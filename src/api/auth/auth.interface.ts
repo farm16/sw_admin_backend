@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AuthPayloadType } from 'shortwaits-shared';
-import { User } from '../user/user.schema';
+import { User } from '../users/entities/user.schema';
 
 export class AuthSuccessResponse implements AuthPayloadType {
   @ApiProperty()

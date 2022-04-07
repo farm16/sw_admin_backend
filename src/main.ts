@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +22,8 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   app.enableCors();
+  app.use(helmet());
+
   await app.listen(port, () => {
     console.log('[HTTP]', `http://localhost:${port}`);
     console.log('[DOCS]', `http://localhost:${port}/api/docs`);

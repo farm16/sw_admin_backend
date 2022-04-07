@@ -259,4 +259,4 @@ const categories: CategoriesPayloadType[] = [
   },
 ];
 
-export default categories;
+export = categories;

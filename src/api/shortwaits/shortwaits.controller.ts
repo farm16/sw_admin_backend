@@ -1,6 +1,7 @@
 import { Controller, Get, Inject, UseInterceptors } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { ShortwaitsAdminDefaultDataPayloadType } from 'shortwaits-shared';
+import { Public } from 'src/common/decorators/auth.decorator';
 import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
 import { Shortwaits } from './shortwaits.schema';
 import { ShortwaitsService } from './shortwaits.service';
@@ -13,6 +14,7 @@ export class ShortwaitsController {
   private readonly shortwaitsService: ShortwaitsService;
 
   @Get('admin/mobile')
+  @Public()
   @ApiCreatedResponse({
     status: 200,
     description: 'Returns new default data for mobile',

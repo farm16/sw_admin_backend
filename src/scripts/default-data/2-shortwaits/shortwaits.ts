@@ -1,6 +1,6 @@
 import { ShortwaitsAdminDefaultDataPayloadType } from 'shortwaits-shared';
 import { getObjectId } from 'mongo-seeding';
-import Categories from '../1-categories/categories';
+import * as categories from '../1-categories/categories';
 
 const shortwaitsAdminDefaultData: ShortwaitsAdminDefaultDataPayloadType[] = [
   {
@@ -13,14 +13,14 @@ const shortwaitsAdminDefaultData: ShortwaitsAdminDefaultDataPayloadType[] = [
     blackList: [],
     timeZones: ['ET'],
     myBusinessDefaultData: {
-      Categories: Categories,
+      Categories: categories,
       myBusinessDefaultServices: [
         {
           name: 'Service I - 15 mins',
           applicableCategories: [
-            Categories[0]._id,
-            Categories[1]._id,
-            Categories[2]._id,
+            categories[0]._id,
+            categories[1]._id,
+            categories[2]._id,
           ],
           hours: {
             mon: [
@@ -96,9 +96,9 @@ const shortwaitsAdminDefaultData: ShortwaitsAdminDefaultDataPayloadType[] = [
         {
           name: 'Service II - 1 hr',
           applicableCategories: [
-            Categories[0]._id,
-            Categories[1]._id,
-            Categories[2]._id,
+            categories[0]._id,
+            categories[1]._id,
+            categories[2]._id,
           ],
           hours: {
             mon: [
@@ -225,9 +225,9 @@ const shortwaitsAdminDefaultData: ShortwaitsAdminDefaultDataPayloadType[] = [
             ],
           },
           applicableCategories: [
-            Categories[0]._id,
-            Categories[1]._id,
-            Categories[2]._id,
+            categories[0]._id,
+            categories[1]._id,
+            categories[2]._id,
           ],
           description: 'Describe your service here =)',
           durationInMin: 180,

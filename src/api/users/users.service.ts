@@ -3,12 +3,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserDocType } from 'shortwaits-shared';
 
-import { User } from './user.schema';
+import { User } from './entities/user.schema';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CreateUserDto, UpdateUserDto } from './dto';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}

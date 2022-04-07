@@ -1,10 +1,14 @@
 import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  NotFoundException,
+  Injectable,
+} from '@nestjs/common';
 import { AuthPayloadType, TokenPayloadType } from 'shortwaits-shared';
 
-import { User } from '../user/user.schema';
+import { User } from '../users/entities/user.schema';
 import { SignUpWithEmailDto } from './dto/sign-up-with-email.dto';
 import { SignInWithEmailDto } from './dto/sign-in-with-email.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -25,7 +29,7 @@ export class AuthService {
       });
 
       if (user) {
-        throw new ForbiddenException('Credentials incorrect');
+        throw new ForbiddenException('Incorrect credentials');
       }
 
       const salt: string = bcrypt.genSaltSync(
@@ -54,7 +58,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new ForbiddenException('Access Denied');
+      throw new NotFoundException('User not registered');
     }
 
     const isPasswordValid: boolean = bcrypt.compareSync(
@@ -73,21 +77,21 @@ export class AuthService {
     return { auth: signedTokens, data: user };
   }
 
-  async logout(userId: number): Promise<boolean> {
+  async logout(userId: number): Promise<AuthPayloadType> {
     await this.userModel.findByIdAndUpdate(userId, {
       hashedRt: null,
     });
-    return true;
+    return { auth: null, data: null };
   }
 
   async refreshTokens(
-    userId: number,
+    userId: string,
     rt: string,
   ): Promise<{ auth: TokenPayloadType }> {
     const user = await this.userModel.findById({ _id: userId });
 
     const rtMatches = bcrypt.compareSync(user.hashedRt, rt);
-    if (!rtMatches) throw new ForbiddenException('Access Denied');
+    if (!rtMatches) throw new ForbiddenException('Unable to reauthenticate');
 
     const signedTokens = await this.signTokens(user);
     await this.updateRtHash(user.id, signedTokens.refreshToken);

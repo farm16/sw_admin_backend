@@ -12,47 +12,48 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
-import { JwtAuthGuard } from 'src/api/auth/auth.guard';
-import { UserService } from './user.service';
+import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
+import { AtGuard } from 'src/common/guards';
 
-@ApiTags('user')
-@Controller('user')
-@UseGuards(JwtAuthGuard)
+@ApiTags('users')
+@Controller('users')
+@ApiBearerAuth('bearer')
+@UseGuards(AtGuard)
 @UseInterceptors(TransformInterceptor)
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
 
   @Get(':id')
-  public async get(@Res() res, @Body('id') userId: string) {
+  async get(@Res() res, @Body('id') userId: string) {
     if (!userId) {
       throw new NotFoundException('User ID does not exist');
     }
-    const user = await this.userService.findById(userId);
+    const user = await this.usersService.findById(userId);
     return res.status(HttpStatus.OK).json(user);
   }
 
   @Put(':id')
-  public async update(
+  async update(
     @Res() res,
     @Body('id') userId: string,
     @Body('user') userData: UpdateUserDto,
   ) {
-    const updatedUser = await this.userService.update(userId, userData);
+    const updatedUser = await this.usersService.update(userId, userData);
     return res.status(HttpStatus.OK).json(updatedUser);
   }
 
   @Post()
-  public async create(@Body('user') userData: CreateUserDto) {
-    return this.userService.create(userData);
+  async create(@Body('user') userData: CreateUserDto) {
+    return this.usersService.create(userData);
   }
 
   @Delete(':id')
   async delete(@Res() res, @Param() params) {
-    await this.userService.remove(params.slug);
+    await this.usersService.remove(params.slug);
     return res.status(HttpStatus.OK);
   }
 }

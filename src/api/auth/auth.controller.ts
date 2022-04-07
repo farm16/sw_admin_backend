@@ -3,8 +3,6 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
-  Inject,
-  Param,
   Post,
   UseGuards,
   ValidationPipe,
@@ -55,13 +53,13 @@ export class AuthController {
     return this.authService.signInLocal(body);
   }
 
-  @Post('logout')
+  @Post('sign-out')
   @HttpCode(HttpStatus.OK)
   @ApiCreatedResponse({
     status: HttpStatus.OK,
     description: 'Revokes tokens',
   })
-  logout(@GetCurrentUserId() userId: number): Promise<boolean> {
+  logout(@GetCurrentUserId() userId: number): Promise<AuthPayloadType> {
     return this.authService.logout(userId);
   }
 
@@ -73,11 +71,11 @@ export class AuthController {
     status: HttpStatus.OK,
     description: 'Returns refreshed token',
   })
-  @HttpCode(HttpStatus.OK)
   refreshTokens(
-    @GetCurrentUserId() userId: number,
+    @GetCurrentUserId() userId: string,
     @GetCurrentUser('refreshToken') refreshToken: string,
-  ): Promise<{ auth: TokenPayloadType } | never> {
+  ): Promise<{ auth: TokenPayloadType }> {
+    console.log('refreshTokens controller');
     return this.authService.refreshTokens(userId, refreshToken);
   }
 }

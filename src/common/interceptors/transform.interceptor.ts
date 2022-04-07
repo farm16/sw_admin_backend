@@ -25,8 +25,8 @@ export class TransformInterceptor<T>
     return next.handle().pipe(
       map((data) => ({
         statusCode: context.switchToHttp().getResponse().statusCode,
-        message: data.message ?? '',
-        data,
+        message: data ? data.message : 'No result',
+        data: data ?? [],
         meta: {}, // if this is supposed to be the actual return then replace {} with data.result
       })),
     );
